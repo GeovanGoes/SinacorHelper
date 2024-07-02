@@ -18,6 +18,8 @@ public final class ClienteBuilder {
 	private NotaNegociacao.Tipos tipo;
 	
 	private List<OpcaoExportacao> opcoesExportacao;
+
+	private List<File> arquivos;
 	
 	public Parser getParser() {
 		return parser;

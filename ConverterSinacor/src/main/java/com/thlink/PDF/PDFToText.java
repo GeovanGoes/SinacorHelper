@@ -18,6 +18,11 @@ public class PDFToText {
 		input = new File(filePath); 
 		document = PDDocument.load(input, password);
 	}
+
+	public PDFToText(File file, String password) throws IOException {
+		input = file;
+		document = PDDocument.load(input, password);
+	}
 	
 	public String getText() throws IOException {
 		

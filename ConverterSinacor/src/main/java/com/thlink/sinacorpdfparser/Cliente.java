@@ -44,6 +44,8 @@ public class Cliente {
 	private String senha;
 	
 	private long timestampArquivo;
+
+	private List<File> arquivos;
 	
 	private final static String OUTPUT_FOLDER = "output";
 	
