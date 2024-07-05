@@ -1,9 +1,14 @@
 package com.thlink.sinacorpdfparser;
 
+import lombok.extern.slf4j.Slf4j;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;import javax.swing.text.AbstractDocument.LeafElement;
 
+@Slf4j
 public class ParserBovespa implements Parser {
 	
 	private ArrayList<NotaNegociacao> notas;
@@ -11,7 +16,7 @@ public class ParserBovespa implements Parser {
 	public ParserBovespa() {
 		notas = new ArrayList<NotaNegociacao>();
 	}
-	
+
 	public Parser find(String text) {
 		String [] documentLines = text.split("\r\n|\r|\n");
 		
@@ -20,7 +25,7 @@ public class ParserBovespa implements Parser {
 		NotaNegociacaoBovespa notaBovespa = new NotaNegociacaoBovespa();
 		for (int i = 0; i < documentLines.length; i++) 
                 {
-                    System.out.println(documentLines[i]);
+                    //System.out.println(documentLines[i]);
                     
                     if (documentLines[i].contains("1-BOVESPA")) {
                     	String[] splited = documentLines[i].split(" ");
@@ -33,12 +38,6 @@ public class ParserBovespa implements Parser {
 									splited[length-2], 
 									splited[length-3], 
 									splited[length-4]));
-							System.out.println("C/V "+splited[1]);
-							System.out.println("Titulo " + splited[3]);
-                        	System.out.println("Ajuste Valor Operação " + splited[length-2]);
-                        	System.out.println("Preço " + splited[length-3]);
-                        	System.out.println("Quantidade " + splited[length-4]);
-                        	
                         } 
                     }
                      
@@ -49,8 +48,29 @@ public class ParserBovespa implements Parser {
                     	
                     	if (documentLines[i-40].equalsIgnoreCase("Nr. nota"))
                     		shift = -5;
-                    		
-                        notaBovespa.setDataPregao(documentLines[i-40-shift]);
+
+                        if (documentLines[i-40].equalsIgnoreCase("Folha"))
+                            shift = -7;
+
+                        String dateString = documentLines[i - 40 - shift];
+
+                        try {
+                            DateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
+                            sdf.parse(dateString);
+                        } catch (Exception e) {
+
+                            shift = -3;
+                            dateString = documentLines[i - 40 - shift];
+                            try {
+                                DateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
+                                sdf.parse(dateString);
+                            } catch (Exception ee) {
+                                throw new RuntimeException(ee);
+                            }
+
+
+                        }
+                        notaBovespa.setDataPregao(dateString);
                         notaBovespa.setCorretora(documentLines[i-39-shift]);
                         notaBovespa.setNrNotaNegociacao(documentLines[i-44-shift]);
                         notaBovespa.setDebentures(extract(documentLines[i-8]));

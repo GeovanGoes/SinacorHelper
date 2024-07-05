@@ -8,21 +8,19 @@ public class CustomCsvExporter {
 	public static String export(ArrayList<NotaNegociacao> notas) throws IllegalArgumentException, IllegalAccessException {
 		StringBuilder content = new StringBuilder();
 		int qtdCampos = 0;
-		
+
+		/** Header **/
+		content.append(getHeader());
+
 		/** Conteúdo das notas **/
 		for(NotaNegociacao nota : notas) {
-			if(nota.getClass().getDeclaredFields().length != qtdCampos) {
-				qtdCampos = 7;
-				content.append(getHeader(nota));
-			}
 			content.append(nota.toCustomCSV());
-			content.append("\n");
 		}
 		
 		return content.toString();
 	}
 	
-	public static String getHeader(NotaNegociacao nota) {
+	public static String getHeader() {
 		StringBuilder header = new StringBuilder();
 		header.append("data;numero da nota;titulo;valor unitario;quantidade;compra ou venda;corretora");
 		header.append("\n");

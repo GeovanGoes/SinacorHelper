@@ -59,7 +59,7 @@ public class APICliente {
                     parser.find(pdf2Text.getText());
                     notasNegociacao.addAll(parser.getNotas());
 
-                } catch (IOException e) {
+                } catch (Exception e) {
                     // TODO Auto-generated catch block
                     log.error("Erro ao processar arquivo: " + arquivo.getName());
                 }
